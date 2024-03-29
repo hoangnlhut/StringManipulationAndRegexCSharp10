@@ -2,6 +2,7 @@
 
 internal sealed class SalesDataProcessor : Processor<ProcessedSalesData>
 {
+    private const char SplitChar = '|';
     private readonly CultureInfo _cultureInfo;
     private readonly ILogger<SalesDataProcessor> _logger;
 
@@ -28,7 +29,17 @@ internal sealed class SalesDataProcessor : Processor<ProcessedSalesData>
         {
             var succeeded = false;
 
-            // TODO - Implementation
+            if (!string.IsNullOrWhiteSpace(row))
+            {
+                var rowParts = row.Split(SplitChar);
+
+                // we use TryParse pattern
+                if (HistoricalSalesData.TryCreateFromHistoricalData(rowParts, _cultureInfo, out HistoricalSalesData? itemProcessedData))
+                {
+                    processedData.Add(itemProcessedData);
+                    succeeded = true;
+                }
+            }
 
             if (!succeeded)
             {

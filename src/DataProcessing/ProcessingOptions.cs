@@ -18,7 +18,7 @@ internal sealed class ProcessingOptions
         LoggerFactory = loggerFactory;
     }
 
-    public string OutputPath { get; init; } = string.Empty;
+    public string OutputPath { get; init; } = @"E:\LEARNING\SELF_TRAINING_FOLDER\AllCSharpKnowledge_PLURALSIGHT\StringManipulationAndRegexCSharp10\dataouput";
     public string InputDirectory { get; init; } = "_SourceData";
 
     public bool ProcessSalesData { get; init; } = true;

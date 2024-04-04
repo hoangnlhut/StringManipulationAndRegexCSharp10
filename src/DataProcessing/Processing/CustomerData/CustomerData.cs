@@ -14,6 +14,8 @@ internal class CustomerData
         if (customerData.PriorityCustomers.Any())
         {
             // TODO
+            var countryWriter = new CustomerDataUniqueCountriesWriter(options, new CultureInfo("da-DK"));
+            await countryWriter.WriteAsync("dk-unique-countries.txt", customerData.PriorityCustomers, cancellationToken);
         }
     }
 }

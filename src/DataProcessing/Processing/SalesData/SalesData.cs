@@ -32,6 +32,8 @@ internal class SalesData
         if (ukData.HasProcessedData)
         {
             // TODO
+            var codesWriter = new SalesCategoryCodesWriter(options);
+            await codesWriter.WriteAsync("uk-sales-category-codes.txt", ukData.ProcessedData, cancellationToken);
         }
     }
 }

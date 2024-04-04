@@ -14,7 +14,7 @@ internal readonly struct ProductInfo : IEquatable<ProductInfo>
     {
         ArgumentNullException.ThrowIfNull(productInfoString);
         // TODO - Implementation
-        return Invalid;
+        return new ProductInfo("TODO", "TODO");
     }
 
     public static ProductInfo ParseUsingRegex(string productInfoString)

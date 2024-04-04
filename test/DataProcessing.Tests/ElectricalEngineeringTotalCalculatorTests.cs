@@ -26,6 +26,8 @@ public class ElectricalEngineeringTotalCalculatorTests
         new HistoricalSalesData { Category = new Category("SAL000", "Description"), 
             UnitPrice = 10, Quantity = 1 },
         new HistoricalSalesData { Category = new Category("ENG001", "Description"), 
+            UnitPrice = 10, Quantity = 2 },
+        new HistoricalSalesData { Category = new Category(null!, "Description"), 
             UnitPrice = 10, Quantity = 2 }
     };
 }

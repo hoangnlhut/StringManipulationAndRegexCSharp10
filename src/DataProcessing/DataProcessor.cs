@@ -9,5 +9,8 @@ internal static class DataProcessor
 
         if (options.ProcessSalesData)
             await SalesData.ProcessSalesDataSamplesAsync(options, cancellationToken);
+
+        if (options.ProcessCustomerData)
+            await CustomerData.ProcessCustomerDataSamplesAsync(options, cancellationToken);
     }
 }

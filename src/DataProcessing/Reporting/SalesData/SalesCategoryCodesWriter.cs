@@ -11,7 +11,15 @@ internal sealed class SalesCategoryCodesWriter : DataWriter<IEnumerable<Historic
         IEnumerable<HistoricalSalesData> salesData, 
         CancellationToken cancellationToken = default)
     {
+        //using sorting LINQ
+        var sortedCodes = salesData.
+            Select(s => s.Category.Code)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(s => s, StringComparer.OrdinalIgnoreCase);
+
         // TODO - Implementation
+
+
         return Task.CompletedTask;
     }
 }

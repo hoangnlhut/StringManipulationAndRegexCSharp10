@@ -89,7 +89,50 @@ internal sealed class HistoricalSalesData
         ArgumentNullException.ThrowIfNull(cultureInfo);
 
         historicalSalesData = null;
-        // TODO - Implementation
+
+        //match all character exept | character, + : it greedily match one or more times. We want at least one character between each pipe 
+        //Conclusion: get 6 pieces that every means get at least one character start by all character exept for | and then have | at the end of piece
+        // and .+ : any character but one or more character in the end of string
+        //after that we add ?: this grouping construct does not capture the substring matched by its subexpression 
+        //var match = Regex.Match(row, @"^(?:(?<parts>[^|]+)\|){6}.+$");
+
+        // add other code to process 7th column 
+        var match = Regex.Match(row, @"^(?:(?<parts>[^|]+)\|){6}(?<parts>(?<code>[a-zA-Z]{3}\d{3}):(?<desc>.+))$");
+
+        var parts = match.Groups["parts"];
+
+        if (!parts.Success) return false; 
+                                                    
+        var productName = parts.Captures[0].Value;
+        if (!long.TryParse(parts.Captures[1].Value, NumberStyles.Number, cultureInfo, out var quantity))
+            return false;
+
+        if (!decimal.TryParse(parts.Captures[2].Value, NumberStyles.Currency, cultureInfo, out var unitPrice) || unitPrice < 0)
+            return false;
+
+        if (!int.TryParse(parts.Captures[3].Value, NumberStyles.Number, cultureInfo, out var tax) || tax < 0 || tax > 100)
+            return false;
+        if (!DateTimeOffset.TryParse(parts.Captures[4].Value, cultureInfo, DateStyle, out var date))
+            return false;
+       
+
+        var data = new HistoricalSalesData()
+        {
+            ProductName = productName,
+            ProductInfo = ProductInfo.Parse(parts.Captures[5].Value),
+            Quantity = quantity,
+            UnitPrice = unitPrice,
+            SalesTaxPercentage = tax,
+            UtcSalesDateTime = date,
+            Category = new Category(match.Groups["code"].Value, match.Groups["desc"].Value),
+            CurrencySymbol = cultureInfo.NumberFormat.CurrencySymbol
+        };
+        if (data.IsValid)
+        {
+            historicalSalesData = data;
+            return true;
+        }
+
         return false;
     }
 
@@ -105,5 +148,16 @@ internal sealed class HistoricalSalesData
         return false;
     }
 
-    public bool IsValid => true;
+    public bool IsValid => 
+        !string.IsNullOrWhiteSpace(ProductName) &&
+        Category != default &&
+        Quantity >= 0 &&
+        UnitPrice >= 0 &&
+        SalesTaxPercentage >=0 && SalesTaxPercentage <= 100 &&
+        UtcSalesDateTime > DateTimeOffset.MinValue &&
+        !string.IsNullOrWhiteSpace(CurrencySymbol) && 
+        !string.IsNullOrWhiteSpace(ProductSalesCode) &&
+        !ProductSalesCode.Equals(ProductInfo.InvalidValue) &&
+        !string.IsNullOrWhiteSpace(ProductSku) &&
+        !ProductSku.Equals(ProductInfo.InvalidValue);
 }

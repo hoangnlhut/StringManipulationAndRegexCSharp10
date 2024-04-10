@@ -31,6 +31,10 @@ public class ProductInfoTests
         new List<object[]>
         {
             new object[] { "123-SKU", "123", "SKU" },
+            new object[] { "123:SKU", "123", "SKU" },
+            new object[] { "123-b#AC65(BBA)", "123", "AC65" },
+            new object[] { "123-B#AC65(BBA)", Invalid, Invalid },
+            new object[] { "123A-SKU", Invalid, Invalid },
             new object[] { "", Invalid, Invalid },
             new object[] { "INVALIDCODE_SKU", Invalid, Invalid },
             new object[] { "123-", Invalid, Invalid },

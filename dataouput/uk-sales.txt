@@ -1,0 +1,22 @@
+﻿Data exported by hoang nguyen 
+Date: Monday, 16 February 1998
+Product Name: Widget 100
+Product SKU: AB65
+Date: Tuesday, 17 February 1998
+Product Name: Widget 10
+Product SKU: 19
+Date: Friday, 20 February 1998
+Product Name: Widget 86 (Colour: Blue)
+Product SKU: AB65
+Date: Saturday, 21 February 1998
+Product Name: Widget 10
+Product SKU: 19
+Date: Monday, 23 February 1998
+Product Name: Widget 66
+Product SKU: 19
+Date: Sunday, 1 March 1998
+Product Name: Widget 6
+Product SKU: AB65
+Date: Sunday, 1 March 1998
+Product Name: Widget 99
+Product SKU: AB65

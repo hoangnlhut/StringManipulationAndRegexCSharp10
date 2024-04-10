@@ -31,6 +31,16 @@ internal sealed class SalesDataProcessor : Processor<ProcessedSalesData>
         {
             var succeeded = false;
 
+            // check malform row
+            // we are going to check whether the row we are processing starts with this 
+            // unprocessable character. 
+            if (row.StartsWith('\u2601'))
+            {
+                failedRows.Add(row);
+                _logger.LogWarning("Row starts with an invalid character");
+                continue;
+            }
+
             if (!string.IsNullOrWhiteSpace(row))
             {
                 ////var rowParts = row.Split(SplitChar);

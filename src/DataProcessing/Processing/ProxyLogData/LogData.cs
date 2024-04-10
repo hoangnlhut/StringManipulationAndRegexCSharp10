@@ -15,7 +15,9 @@ internal class LogData
 
         if (insercureClients.Any())
         {
-            // TODO
+            var reportWriter = new InsecureHostsReportWriter(options);
+
+            await reportWriter.WriteAsync("insecure-hosts.txt", insercureClients, cancellationToken);
         }
     }
 }

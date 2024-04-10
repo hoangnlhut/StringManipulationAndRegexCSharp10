@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace DataProcessing;
@@ -41,11 +42,13 @@ internal sealed class HistoricalSalesData
         ArgumentNullException.ThrowIfNull(cultureInfo);
 
         historicalSalesData = null;
-        
-        if(sourceData.Length == 7)
+
+        if (sourceData.Length == 7)
         {
             var productName = sourceData[0];
-            if (!long.TryParse(sourceData[1], NumberStyles.Number, cultureInfo , out var quantity))
+            productName = productName.Replace("Color", "Colour");
+
+            if (!long.TryParse(sourceData[1], NumberStyles.Number, cultureInfo, out var quantity))
                 return false;
 
             if (!decimal.TryParse(sourceData[2], NumberStyles.Currency, cultureInfo, out var unitPrice) || unitPrice < 0)
@@ -53,7 +56,7 @@ internal sealed class HistoricalSalesData
 
             if (!int.TryParse(sourceData[3], NumberStyles.Number, cultureInfo, out var tax) || tax < 0 || tax > 100)
                 return false;
-            if(!DateTimeOffset.TryParse(sourceData[4], cultureInfo, DateStyle, out var date)) 
+            if (!DateTimeOffset.TryParse(sourceData[4], cultureInfo, DateStyle, out var date))
                 return false;
             if (!Category.TryParse(sourceData[6], out var category))
                 return false;
@@ -101,9 +104,11 @@ internal sealed class HistoricalSalesData
 
         var parts = match.Groups["parts"];
 
-        if (!parts.Success) return false; 
-                                                    
+        if (!parts.Success) return false;
+
         var productName = parts.Captures[0].Value;
+        productName = productName.Replace("Color", "Colour");
+
         if (!long.TryParse(parts.Captures[1].Value, NumberStyles.Number, cultureInfo, out var quantity))
             return false;
 
@@ -114,7 +119,7 @@ internal sealed class HistoricalSalesData
             return false;
         if (!DateTimeOffset.TryParse(parts.Captures[4].Value, cultureInfo, DateStyle, out var date))
             return false;
-       
+
 
         var data = new HistoricalSalesData()
         {
@@ -148,16 +153,45 @@ internal sealed class HistoricalSalesData
         return false;
     }
 
-    public bool IsValid => 
+    public bool IsValid =>
         !string.IsNullOrWhiteSpace(ProductName) &&
         Category != default &&
         Quantity >= 0 &&
         UnitPrice >= 0 &&
-        SalesTaxPercentage >=0 && SalesTaxPercentage <= 100 &&
+        SalesTaxPercentage >= 0 && SalesTaxPercentage <= 100 &&
         UtcSalesDateTime > DateTimeOffset.MinValue &&
-        !string.IsNullOrWhiteSpace(CurrencySymbol) && 
+        !string.IsNullOrWhiteSpace(CurrencySymbol) &&
         !string.IsNullOrWhiteSpace(ProductSalesCode) &&
         !ProductSalesCode.Equals(ProductInfo.InvalidValue) &&
         !string.IsNullOrWhiteSpace(ProductSku) &&
         !ProductSku.Equals(ProductInfo.InvalidValue);
+
+    public string[] GetFormattedComponents(CultureInfo culture)
+    {
+        return new string[]
+        {
+            UtcSalesDateTime.ToString("u", culture),
+            ProductSalesCode,
+            ProductSku,
+            ProductName,
+            Category.Code,
+            Currency,
+            UnitPrice.ToString("N2", culture), // format to 2 number after .
+            Quantity.ToString("N0", culture), // format to 0 number after .
+            SalesTaxPercentage.ToString("N0",culture)
+        };
+    }
+
+    public void ProduceRow(CultureInfo culture, StringBuilder stringBuilder)
+    => _ = stringBuilder
+        .AppendFormat(culture, "{0:u}", UtcSalesDateTime)
+        .Append(ProductSalesCode).Append(',')
+        .Append(ProductSku).Append(",")
+        .Append(ProductName).Append(",")
+        .Append(Category.Code).Append(",")
+        .Append(Currency).Append(",")
+        .AppendFormat(culture, "{0:N2}", UnitPrice)
+        .AppendFormat(culture, "{0:N0}", Quantity)
+        .AppendFormat(culture, "{0:N0}", SalesTaxPercentage)
+        .AppendLine();
 }

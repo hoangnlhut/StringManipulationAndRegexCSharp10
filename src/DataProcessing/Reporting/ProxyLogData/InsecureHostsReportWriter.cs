@@ -19,8 +19,23 @@ internal class InsecureHostsReportWriter : DataWriter<InsecureHostsByIPAddressDi
 
         foreach (var (ip, hostnames) in data)
         {
-            // TODO
+            var ipString = ip.ToString();
+
+            sb.AppendLine(ipString);
+            sb.Append('-', ipString.Length).AppendLine();
+
+            foreach (var hostname in hostnames)
+            {
+                sb.AppendLine(hostname);
+            }
+
+            sb.AppendLine().Append('*', LineSeparatorLength).AppendLine().AppendLine();
         }
+
+        var lengToRemove = (Environment.NewLine.Length * 3) + LineSeparatorLength;
+
+        //we need to remove 3 new line and 30 line separator
+        sb.Remove(sb.Length - lengToRemove, lengToRemove);
 
         foreach (var writer in OutputWriters)
         {

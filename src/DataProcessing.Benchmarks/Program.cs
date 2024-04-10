@@ -13,4 +13,5 @@ config.AddDiagnoser(MemoryDiagnoser.Default);
 
 //BenchmarkRunner.Run<SalesDataParsingBenchmarks>(config);
 //BenchmarkRunner.Run<SalesDataRowSplitBenchmarks>(config);
-BenchmarkRunner.Run<CompiledRegexBenchmarks>(config);
+//BenchmarkRunner.Run<CompiledRegexBenchmarks>(config);
+BenchmarkRunner.Run<CategoryCodesWriterBenchmarks>(config);

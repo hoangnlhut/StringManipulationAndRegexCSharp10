@@ -11,3 +11,4 @@ internal sealed class ThirdPartyOutputWriter : IOutputWriter
         return exporter.WriteDataAsync(data, cancellationToken);
     }
 }
+

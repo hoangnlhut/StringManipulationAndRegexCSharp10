@@ -49,6 +49,7 @@ public class CategoryTests
             new object?[] { "   ENG001  :   Engineering ", "ENG001", "Engineering", true },
             new object?[] { "EG001:Engineering", null, null, false },
             new object?[] { "ENG001:", null, null, false },
-            new object?[] { " ENG001", null, null, false }
+            new object?[] { " ENG001", null, null, false },
+            new object?[] { "eng001:Engineering", "ENG001", "Engineering", true },
         };
 }
